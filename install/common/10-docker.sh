@@ -9,7 +9,7 @@ apt-get update && apt-get install docker-engine
 usermod -a -G docker admin 
 
 #enable memory and swap on system
-echo "GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1" >> /etc/default/grub
+echo 'GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"' >> /etc/default/grub
 update-grub
 
 #docker-compose
