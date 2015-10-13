@@ -2,7 +2,7 @@
 
 add-apt-repository ppa:ubuntu-lxc/lxd-stable
 apt-get update
-apt-get dist-upgrade
-apt-get install lxd
+apt-get dist-upgrade -y
+apt-get install lxd -y
 
 usermod -a -G lxd admin
