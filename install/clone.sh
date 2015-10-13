@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#script to install ubuntu-core on HDD
+
 DEVICE=$1
 ARCHIVE=$2
 CLUSTER=$3
@@ -51,11 +53,13 @@ UUID=$UUID_BTRFS_ROOT / btrfs defaults,subvol=@,compress=lzo 0 1
 UUID=$UUID_SWAP swap swap defaults 0 0
 EOF
 echo "(hd0)   /dev/${DEVICE}" > /mnt/${DEVICE}3/boot/grub/device.map
-mkdir -p /mnt/${DEVICE}3/run/resolvconf
-echo 'nameserver 8.8.8.8' > /mnt/${DEVICE}3/run/resolvconf/resolv.conf
+echo 'nameserver 8.8.8.8' > /mnt/${DEVICE}3/etc/resolv.conf
 export DEBIAN_FRONTEND=noninteractive
 chroot /mnt/${DEVICE}3 apt-get update 
-chroot /mnt/${DEVICE}3 apt-get -y install vlan bridge-utils tasksel grub2 acpid linux-headers-3.19.0-25-generic linux-image-3.19.0-25-generic 
+chroot /mnt/${DEVICE}3 apt-get -y install vlan bridge-utils tasksel grub2 acpid \
+                        linux-headers-3.19.0-25-generic linux-image-3.19.0-25-generic \
+                        openssh-server openssh-client openssh-blacklist openssh-blacklist-extra 
+                     
 chroot /mnt/${DEVICE}3 grub-install /dev/${DEVICE}
 chroot /mnt/${DEVICE}3 update-grub
 
@@ -74,39 +78,14 @@ for f in /mnt/${DEVICE}3/etc/network/interfaces.d/*.cfg; do
     perl -i -pe "s/address 192\.168\.\d+\.XX/address 192.168.0.$IP/"  /mnt/${DEVICE}3/etc/network/interfaces.d/net-br-lan-${CLUSTER}.cfg
 done
 
-## reconfig ssh keys
-rm -f //mnt/${DEVICE}3/etc/ssh/ssh_host_*
-cat > /mnt/${DEVICE}3/etc/rc.local << EOF
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
-
-if [ -f /firstboot ]; then
-  dpkg-reconfigure openssh-server
-
-  rm /firstboot
-fi
-
-exit 0
-EOF
-touch /mnt/${DEVICE}3/firstboot
-
 cd $d
 
 ###
 echo "Success!!"
-echo "Run commands to umount image:"
-echo umount /mnt/${DEVICE}3/dev
-echo umount /mnt/${DEVICE}3/proc
-echo umount /mnt/${DEVICE}3/sys
-echo umount /mnt/${DEVICE}3
-echo rmdir /mnt/${DEVICE}3
+
+#echo "Run commands to umount image:"
+umount /mnt/${DEVICE}3/dev
+umount /mnt/${DEVICE}3/proc
+umount /mnt/${DEVICE}3/sys
+umount /mnt/${DEVICE}3
+rmdir /mnt/${DEVICE}3
