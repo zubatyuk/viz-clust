@@ -39,7 +39,7 @@ mount -o subvol=@,compress=lzo /dev/${DEVICE}3 /mnt/${DEVICE}3
 
 d=`pwd`
 cd /mnt/${DEVICE}3
-tar --acls --xattrs --keep-directory-symlink --numeric-owner --selinux -xzf ${ARCHIVE}
+tar -xpzf ${ARCHIVE}
 
 #chroot and configure
 ##fstab and boot
@@ -51,7 +51,9 @@ UUID=$UUID_BTRFS_ROOT / btrfs defaults,subvol=@,compress=lzo 0 1
 UUID=$UUID_SWAP swap swap defaults 0 0
 EOF
 echo "(hd0)   /dev/${DEVICE}" > /mnt/${DEVICE}3/boot/grub/device.map
-echo 'nameserver 8.8.8.8' > /mnt/${DEVICE}3/etc/resolv.conf
+mkdir -p /mnt/${DEVICE}3/run/resolvconf
+echo 'nameserver 8.8.8.8' > /mnt/${DEVICE}3/run/resolvconf/resolv.conf
+export DEBIAN_FRONTEND=noninteractive
 chroot /mnt/${DEVICE}3 apt-get update 
 chroot /mnt/${DEVICE}3 apt-get -y install vlan bridge-utils tasksel grub2 acpid linux-headers-3.19.0-25-generic linux-image-3.19.0-25-generic 
 chroot /mnt/${DEVICE}3 grub-install /dev/${DEVICE}
@@ -70,7 +72,6 @@ fi
 cp $GITTREE/config/net-*-${CLUSTER}.cfg /mnt/${DEVICE}3/etc/network/interfaces.d
 for f in /mnt/${DEVICE}3/etc/network/interfaces.d/*.cfg; do
     perl -i -pe "s/address 192\.168\.\d+\.XX/address 192.168.0.$IP/"  /mnt/${DEVICE}3/etc/network/interfaces.d/net-br-lan-${CLUSTER}.cfg
-    python $GITTREE/scripts/net-rand-xx.py $f
 done
 
 ## reconfig ssh keys
