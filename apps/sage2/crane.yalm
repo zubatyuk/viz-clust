@@ -16,9 +16,13 @@ containers:
             volume:
                 - "xinit:/home/chrome/.xinitrc"
                 - "xorg.conf:/home/chrome/xorg.conf"
+                - "/lib/modules:/lib/modules"
             env:
                 - "XORGCONFIG=/home/chrome/xorg.conf"
                 - "sage2ScreenRes=sage2ScreenRes"
                 - "sage2Clients=$sage2Clients"
+                - "sage2Server:$sage2Server"
             cmd: /usr/bin/xinit
+            privileged: true
+            rm: true
                 
