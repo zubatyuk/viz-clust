@@ -18,7 +18,7 @@ containers:
                 - "xorg.conf:/home/chrome/xorg.conf"
             env:
                 - "XORGCONFIG=/home/chrome/xorg.conf"
-                - "SAGE2_SCREEN_RES=$SAGE2_SCREEN_RES"
-                - "SAGE2_CLIENTS=$SAGE_CLIENTS"
+                - "sage2ScreenRes=sage2ScreenRes"
+                - "sage2Clients=$sage2Clients"
             cmd: /usr/bin/xinit
                 
