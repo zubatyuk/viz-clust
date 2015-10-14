@@ -1,0 +1,24 @@
+containers:
+    sage2-server:
+        image: sage2-server
+        run:
+            publish: ["9090:9090", "9292:9292"]
+            volume:
+                - "/srv/sage2/public:/sage2/public/uploads"
+                - "sage2.cfg:/sage2/config/default-cfg.json"
+                - "/srv/sage2/user:/root/Documents/SAGE2_Media"
+            restart: always
+                
+    sage2-client-chrome:
+        image: zubatyuk/sage2-client-chrome
+        run:
+            user: chrome
+            volume:
+                - "xinit:/home/chrome/.xinitrc"
+                - "xorg.conf:/home/chrome/xorg.conf"
+            env:
+                - "XORGCONFIG=/home/chrome/xorg.conf"
+                - "SAGE2_SCREEN_RES=$SAGE2_SCREEN_RES"
+                - "SAGE2_CLIENTS=$SAGE_CLIENTS"
+            cmd: /usr/bin/xinit
+                
