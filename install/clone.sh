@@ -52,16 +52,23 @@ cat > /mnt/${DEVICE}3/etc/fstab << EOF
 UUID=$UUID_BTRFS_ROOT / btrfs defaults,subvol=@,compress=lzo 0 1
 UUID=$UUID_SWAP swap swap defaults 0 0
 EOF
+mkdir -p /mnt/${DEVICE}3/boot/grub
 echo "(hd0)   /dev/${DEVICE}" > /mnt/${DEVICE}3/boot/grub/device.map
 echo 'nameserver 8.8.8.8' > /mnt/${DEVICE}3/etc/resolv.conf
 export DEBIAN_FRONTEND=noninteractive
 chroot /mnt/${DEVICE}3 apt-get update 
-chroot /mnt/${DEVICE}3 apt-get -y install vlan bridge-utils tasksel grub2 acpid \
+chroot /mnt/${DEVICE}3 apt-get -y install vlan bridge-utils tasksel grub-pc acpid \
                         linux-headers-3.19.0-25-generic linux-image-3.19.0-25-generic \
                         openssh-server openssh-client openssh-blacklist openssh-blacklist-extra 
                      
 chroot /mnt/${DEVICE}3 grub-install /dev/${DEVICE}
 chroot /mnt/${DEVICE}3 update-grub
+
+#root passwd and ssh keys
+chroot /mnt/${DEVICE}3 usermod -p '$6$.WL1Wdmxj$UyjSmspA988qUw2jTdrNBDicWt9QPa0TlQL6gzEFIdX8n./sFEjkh9IoKAhpuNn4T/XZGAOSiiWwQ.TAnUUi4/' root
+mkdir -p > /mnt/${DEVICE}3/root/.ssh
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVIcYnwPY552HdRFMvk/eCFnjbWPuWtHaLgC1OpEY7Gsvgx/A7pHGXN35kHwrBRbjzU37roaf+3S4aP+5H/sgJ1cLPZyoHSk9ZsH2vfKqsKPmsMX++AltoFRcCU1qIAId8FMAw5DHVKMPh0zANqN9Z8d1x/ek3DFef1HvFd3T/WfzewfsiTbFeLKTIl0sdA4O23Pyvz8xcxXUcAtcms0NvrmcZ0L4pJQQ5IRJO1f76myAXom1yPWwf36KNcfTAlW/nFU3EmVmb2hgmKr/fkaG1L1S5vw2BwohchpHA6x0d+2kJRZ40qcFMAjfy2wneMpneC30SWX0d2uHaJCUS/fy5 root@viz"  > /mnt/${DEVICE}3/root/.ssh/authorized_keys
+chmod -R go-r /mnt/${DEVICE}3/root/.ssh
 
 ##network
 cat > /mnt/${DEVICE}3/etc/network/interfaces << EOF
@@ -82,10 +89,9 @@ cd $d
 
 ###
 echo "Success!!"
-
 #echo "Run commands to umount image:"
-umount /mnt/${DEVICE}3/dev
 umount /mnt/${DEVICE}3/proc
 umount /mnt/${DEVICE}3/sys
+umount /mnt/${DEVICE}3/dev
 umount /mnt/${DEVICE}3
 rmdir /mnt/${DEVICE}3
