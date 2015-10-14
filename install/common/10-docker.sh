@@ -3,7 +3,7 @@
 #install docker
 apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 echo "deb http://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
-apt-get update && apt-get install -y docker-engine curl
+apt-get update && apt-get install -y docker-engine curl iputils-arping
 
 #add group for admin user
 usermod -a -G docker admin 
@@ -17,8 +17,8 @@ curl -L https://github.com/docker/compose/releases/download/1.4.2/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 #crane
-bash -c "`curl -sL https://raw.githubusercontent.com/michaelsauter/crane/v2.0.1/download.sh`"
-mv crane /usr/local/bin/crane
+#bash -c "`curl -sL https://raw.githubusercontent.com/michaelsauter/crane/v2.0.1/download.sh`"
+#mv crane /usr/local/bin/crane
 
 #pipework
 apt-get install curl

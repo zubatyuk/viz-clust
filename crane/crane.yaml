@@ -16,4 +16,5 @@ containers:
                 - "dnsmasq.d/althosts:/etc/althosts"
             restart: always
             net: none
+            cmd: /usr/sbin/dnsmasq -d  
 
