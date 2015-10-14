@@ -2,8 +2,6 @@
 
 global_param="--new-window --window-size=${sage2ScreenRes} --kiosk --disable-popup-blocking --no-first-run --use-gl --enable-accelerated-compositing --allow-file-access-from-files --disable-session-crashed-bubble --allow-running-insecure-content --disable-infobars  --ignore-certificate-errors --no-default-browser-check --enable-gpu-rasterization"
 
-nscreens=`~/x11screens`
-
 screenNum=0
 for clientId in ${sage2Clients}; do
     UDD=`mktemp -d`
