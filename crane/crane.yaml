@@ -1,7 +1,5 @@
 containers:
     apt-cacher-ng:
-        build:
-            context: image
         image: zubatyuk/apt-cacher-ng
         run:
             publish: ["3142:3142"]
@@ -9,13 +7,13 @@ containers:
             restart: always
 
     dnsmasq:
-        build:
-            context: image
         image: zubatyuk/dnsmasq
         run:
-            publish: ["53:53", "63:63/udp"]
+            publish: []
             volume: 
                 - "dnsmasq.d/common.conf:/etc/dnsmasq.d/common.conf"
                 - "dnsmasq.d/${CLUSTER}.conf:/etc/dnsmasq.d/${CLUSTER}.conf"
                 - "dnsmasq.d/althosts:/etc/althosts"
             restart: always
+            net: none
+
