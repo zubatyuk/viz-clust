@@ -1,6 +1,6 @@
 #!/bin/bash
 
-add-apt-repository ppa:ubuntu-lxc/lxd-stable
+add-apt-repository -y ppa:ubuntu-lxc/lxd-stable
 apt-get update
 apt-get dist-upgrade -y
 apt-get install lxd -y
